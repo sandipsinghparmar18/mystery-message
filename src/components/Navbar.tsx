@@ -21,7 +21,7 @@ const Navbar = () => {
             </span>
             <Button
               onClick={() => signOut()}
-              className="w-full md:w-auto bg-slate-100 text-black cursor-pointer"
+              className="mt-3 md:mt-0 w-full md:w-auto bg-slate-100 text-black cursor-pointer"
               variant="outline"
             >
               Logout

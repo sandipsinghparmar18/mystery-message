@@ -55,7 +55,7 @@ const MessageCard = ({ message, onMessageDelete }: MessageCardProps) => {
           <CardTitle>{message.content}</CardTitle>
           <AlertDialog>
             <AlertDialogTrigger asChild>
-              <Button variant="destructive">
+              <Button className="ml-2" variant="destructive">
                 <X className="w-5 h-5" />
               </Button>
             </AlertDialogTrigger>
