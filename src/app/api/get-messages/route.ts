@@ -8,24 +8,30 @@ import mongoose from "mongoose";
 export async function GET(request: Request) {
   await dbConnect();
   const session = await getServerSession(authOptions);
-  const user: User = session?.user as User;
-  if (!session || !session.user) {
+  const _user: User = session?.user as User;
+  if (!session || !_user) {
     return Response.json(
       {
-        success: true,
+        success: false,
         message: "Not Authenticated",
       },
       { status: 401 }
     );
   }
-  const userId = new mongoose.Types.ObjectId(user._id);
+  //console.log("Normal id ", _user._id);
+  const userId = new mongoose.Types.ObjectId(_user._id);
+  // console.log("Mogo Id ", userId);
   try {
+    // const found = await UserModel.findById(userId);
+    // console.log("Found User: ", found);
+
     const user = await UserModel.aggregate([
-      { $match: { id: userId } },
-      { $unwind: "$messages" },
+      { $match: { _id: userId } },
+      { $unwind: { path: "$messages", preserveNullAndEmptyArrays: true } },
       { $sort: { "messages.createdAt": -1 } },
       { $group: { _id: "$_id", messages: { $push: "$messages" } } },
     ]);
+    //console.log(user);
     if (!user || user.length === 0) {
       return Response.json(
         {
