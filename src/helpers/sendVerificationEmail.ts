@@ -1,6 +1,6 @@
-import { resend } from "@/lib/resend";
-import VerificationEmail from "../../emails/VerificationEmail";
+import { getVerificationEmailHtml } from "../../emails/VerificationEmail";
 import { ApiResponse } from "@/types/ApiResponse";
+import { transporter } from "@/lib/mailer";
 
 export async function sendVerificationEmail(
   email: string,
@@ -8,13 +8,13 @@ export async function sendVerificationEmail(
   verifyCode: string
 ): Promise<ApiResponse> {
   try {
-    const response = await resend.emails.send({
-      from: "onboarding@resend.dev", // replace with your verified domain in production
+    //const emailHtml = render(<VerificationEmail username={username} otp={verifyCode} />);
+    await transporter.sendMail({
+      from: `"Mystry Message" <${process.env.EMAIL_USER}>`,
       to: email,
       subject: "Mystry message | Verification Code",
-      react: VerificationEmail({ username, otp: verifyCode }),
+      html: getVerificationEmailHtml(username, verifyCode),
     });
-
     return { success: true, message: "Verification email sent successfully" };
   } catch (emailError: any) {
     console.error(
@@ -24,3 +24,10 @@ export async function sendVerificationEmail(
     return { success: false, message: "Failed to send verification email" };
   }
 }
+
+// const response = await resend.emails.send({
+//       from: "onboarding@resend.dev", // replace with your verified domain in production
+//       to: email,
+//       subject: "Mystry message | Verification Code",
+//       react: VerificationEmail({ username, otp: verifyCode }),
+//     });
