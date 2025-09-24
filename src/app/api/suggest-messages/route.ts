@@ -4,7 +4,7 @@ export const runtime = "edge";
 
 import axios from "axios";
 
-export async function POST(req: Request) {
+export async function POST() {
   console.log("request come");
   try {
     const prompt =
@@ -38,7 +38,7 @@ export async function POST(req: Request) {
 
     return NextResponse.json({ suggestions: message }); // ✅ plain text stream
   } catch (error) {
-    //console.error("Unexpected error:", error);
+    console.error("Unexpected error:", error);
     return NextResponse.json(
       { error: "Internal Server Error" },
       { status: 500 }

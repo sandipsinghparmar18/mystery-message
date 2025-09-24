@@ -148,7 +148,7 @@ const SendMessage = () => {
                 </Button>
               ))
             ) : (
-              <p>No suggestions yet. Click "Suggest Messages".</p>
+              <p>No suggestions yet. Click Suggest Messages.</p>
             )}
           </CardContent>
         </Card>

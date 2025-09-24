@@ -3,11 +3,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
-import axios, { AxiosError } from "axios";
-import { ApiResponse } from "@/types/ApiResponse";
 import { Loader2 } from "lucide-react";
 import {
   Form,
@@ -22,7 +20,7 @@ import { Button } from "@/components/ui/button";
 import { signInSchema } from "@/schemas/signInSchema";
 import { signIn } from "next-auth/react";
 
-function page() {
+function SignInPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const router = useRouter();
@@ -43,16 +41,16 @@ function page() {
       identifier: data.identifier,
       password: data.password,
     });
+
     if (result?.error) {
-      toast.error("Incorrect username or password");
+      const errMessage = result.error.replace("Error: ", "");
+      toast.error(errMessage);
       setIsSubmitting(false);
+      return;
     }
     if (result?.url) {
       router.replace("/dashboard");
       setIsSubmitting(false);
-    }
-    if (result?.url) {
-      router.replace("/dashboard");
     }
   };
   return (
@@ -117,4 +115,4 @@ function page() {
   );
 }
 
-export default page;
+export default SignInPage;

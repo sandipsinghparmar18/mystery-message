@@ -14,7 +14,6 @@ import { Loader2 } from "lucide-react";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -23,7 +22,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
-function page() {
+function SignUpPage() {
   const [username, setUsername] = useState("");
   const [usernameMessage, setUsernameMessage] = useState("");
   const [isChechingUsername, setIsCheckingUsername] = useState(false);
@@ -111,7 +110,7 @@ function page() {
                   <p
                     className={`text-sm ${usernameMessage === "Username is available" ? "text-green-500" : "text-red-500"}`}
                   >
-                    test {usernameMessage}
+                    {usernameMessage}
                   </p>
                   <FormMessage />
                 </FormItem>
@@ -168,4 +167,4 @@ function page() {
   );
 }
 
-export default page;
+export default SignUpPage;
