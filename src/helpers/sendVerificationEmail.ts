@@ -2,6 +2,13 @@ import { getVerificationEmailHtml } from "../../emails/VerificationEmail";
 import { ApiResponse } from "@/types/ApiResponse";
 import { transporter } from "@/lib/mailer";
 
+interface MailError extends Error {
+  code?: string;
+  response?: string;
+  responseCode?: number;
+  command?: string;
+}
+
 export async function sendVerificationEmail(
   email: string,
   username: string,
@@ -16,12 +23,14 @@ export async function sendVerificationEmail(
       html: getVerificationEmailHtml(username, verifyCode),
     });
     return { success: true, message: "Verification email sent successfully" };
-  } catch (emailError: any) {
-    console.error(
-      "Error sending verification email",
-      emailError.response?.data || emailError
-    );
-    return { success: false, message: "Failed to send verification email" };
+  } catch (emailError) {
+    const err = emailError as MailError;
+    console.error("Email error: ", err);
+
+    return {
+      success: false,
+      message: "Failed to send verification email due to server error.",
+    };
   }
 }
 

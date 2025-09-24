@@ -10,6 +10,7 @@ export async function POST(request: Request) {
       username,
       isVerified: true,
     });
+
     if (existingUserVerifiedByUsername) {
       return Response.json(
         {
@@ -18,6 +19,12 @@ export async function POST(request: Request) {
         },
         { status: 400 }
       );
+    }
+    const existingUserbyUsername = await UserModel.findOne({ username });
+    if (existingUserbyUsername) {
+      if (existingUserbyUsername.email !== email) {
+        await UserModel.findByIdAndDelete(existingUserbyUsername._id);
+      }
     }
     const existingUserByEmail = await UserModel.findOne({ email });
     const verifyCode = Math.floor(100000 + Math.random() * 900000).toString();
