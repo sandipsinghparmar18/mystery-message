@@ -1,8 +1,13 @@
-import { NextAuthOptions } from "next-auth";
+import { NextAuthOptions, User } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
 import dbConnect from "@/lib/dbConnect";
 import UserModel from "@/model/User";
+
+interface Credentials {
+  identifier: string;
+  password: string;
+}
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -13,27 +18,30 @@ export const authOptions: NextAuthOptions = {
         email: { label: "Email", type: "text" },
         password: { label: "Password", type: "password" },
       },
-      async authorize(credentials: any): Promise<any> {
+      async authorize(credentials): Promise<User | null> {
+        if (!credentials) return null;
+        const { identifier, password } = credentials as unknown as Credentials;
         await dbConnect();
         try {
           const user = await UserModel.findOne({
-            $or: [
-              { email: credentials.identifier },
-              { username: credentials.identifier },
-            ],
+            $or: [{ email: identifier }, { username: identifier }],
           });
           if (!user) {
-            throw new Error("No user found with this email");
+            throw new Error("No user found with this email or username");
           }
           if (!user.isVerified) {
             throw new Error("Please verify your account before logging in");
           }
           const isPasswordCorrect = await bcrypt.compare(
-            credentials.password,
+            password,
             user.password
           );
           if (isPasswordCorrect) {
-            return user;
+            return {
+              _id: user._id.toString(),
+              username: user.username,
+              email: user.email,
+            } as User;
           } else {
             throw new Error("Incorrect password");
           }
